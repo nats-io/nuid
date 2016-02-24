@@ -1,7 +1,9 @@
-# NUID - An entropy friendly and highly performant unique identifier generator.
+# NUID
 
 [![License MIT](https://img.shields.io/npm/l/express.svg)](http://opensource.org/licenses/MIT)
 [![ReportCard](http://goreportcard.com/badge/nats-io/nuid)](http://goreportcard.com/report/nats-io/nuid) [![Build Status](https://travis-ci.org/nats-io/nuid.svg?branch=master)](http://travis-ci.org/nats-io/nuid) [![GoDoc](http://godoc.org/github.com/nats-io/nuid?status.png)](http://godoc.org/github.com/nats-io/nuid) [![Coverage Status](https://coveralls.io/repos/nats-io/nuid/badge.svg?branch=master)](https://coveralls.io/r/nats-io/nuid?branch=master)
+
+An entropy friendly and highly performant unique identifier generator.
 
 ## Installation
 
@@ -10,7 +12,6 @@ Use the `go` command:
 	$ go get github.com/nats-io/nuid
 
 ## Basic Usage
-
 ```go
 
 // Utilize the global locked instance
@@ -24,6 +25,17 @@ nuid = n.Next()
 // Generally not needed, happens automatically.
 n.RandomizePrefix()
 ```
+
+## Performance
+NUID needs to be very fast to generate and be truly unique, all while being entropy pool friendly.
+NUID uses 12 bytes of crypto generated data (entropy draining), and 10 bytes of pseudo-random
+sequential data that increments with a pseudo-random increment.
+
+Total length of a NUID string is 22 bytes of base 36 ascii text, so 36^22 or
+17324272922341479351919144385642496 possibilities.
+
+NUID can generate identifiers as fast as 60ns, or ~16 million per second. There is an associated
+benchmark you can use to test performance on your own hardware.
 
 ## License
 
