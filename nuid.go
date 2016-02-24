@@ -13,7 +13,7 @@ import (
 	prand "math/rand"
 )
 
-// NUID need to be very fast to generate and truly unique, all while being entropy pool friendly.
+// NUID needs to be very fast to generate and truly unique, all while being entropy pool friendly.
 // We will use 12 bytes of crypto generated data (entropy draining), and 10 bytes of sequential data
 // that is started at a pseudo random number and increments with a pseudo-random increment.
 // Total is 22 bytes of base 36 ascii text :)
