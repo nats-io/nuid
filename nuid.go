@@ -4,13 +4,12 @@
 package nuid
 
 import (
-	"crypto/rand"
+	cryptorand "crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"math/big"
-	"sync"
-	"time"
-
 	prand "math/rand"
+	"sync"
 )
 
 // NUID needs to be very fast to generate and truly unique, all while being entropy pool friendly.
@@ -46,7 +45,7 @@ var globalNUID *lockedNUID
 
 // Seed sequential random with math/random and current time and generate crypto prefix.
 func init() {
-	prand.Seed(time.Now().UnixNano())
+	prand.Seed(cryptoRandInt64())
 	globalNUID = &lockedNUID{NUID: New()}
 	globalNUID.RandomizePrefix()
 }
@@ -103,7 +102,7 @@ func (n *NUID) resetSequential() {
 // This will drain entropy and will be called automatically when we exhaust the sequential
 // Will panic if it gets an error from rand.Int()
 func (n *NUID) RandomizePrefix() {
-	r, err := rand.Int(rand.Reader, big.NewInt(maxPre))
+	r, err := cryptorand.Int(cryptorand.Reader, big.NewInt(maxPre))
 	if err != nil {
 		panic(fmt.Sprintf("nuid: failed generating crypto random number: %v\n", err))
 	}
@@ -112,4 +111,15 @@ func (n *NUID) RandomizePrefix() {
 		i -= 1
 		n.pre[i] = digits[l%base]
 	}
+}
+
+// Generate a random int64 from the cryptographic
+// random number source.
+func cryptoRandInt64() int64 {
+	b := make([]byte, 8)
+	_, err := cryptorand.Read(b)
+	if err != nil {
+		panic(err)
+	}
+	return int64(binary.LittleEndian.Uint64(b))
 }
