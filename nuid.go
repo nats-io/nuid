@@ -108,7 +108,7 @@ func (n *NUID) RandomizePrefix() {
 		panic(fmt.Sprintf("nuid: failed generating crypto random number: %v\n", err))
 	}
 	i := len(n.pre)
-	for l := r.Int64(); l > 0; l /= base {
+	for l := r.Int64(); i > 0; l /= base {
 		i -= 1
 		n.pre[i] = digits[l%base]
 	}
