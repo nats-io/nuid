@@ -34,6 +34,29 @@ func TestGUIDLen(t *testing.T) {
 	}
 }
 
+func TestProperPrefix(t *testing.T) {
+	min := byte(255)
+	max := byte(0)
+	for i := 0; i < len(digits); i++ {
+		if digits[i] < min {
+			min = digits[i]
+		}
+		if digits[i] > max {
+			max = digits[i]
+		}
+	}
+	total := 100000
+	for i := 0; i < total; i++ {
+		n := New()
+		for j := 0; j < preLen; j++ {
+			if n.pre[j] < min || n.pre[j] > max {
+				t.Fatalf("Iter %d. Valid range for bytes prefix: [%d..%d]\nIncorrect prefix at pos %d: %v (%s)",
+					i, min, max, j, n.pre, string(n.pre))
+			}
+		}
+	}
+}
+
 func BenchmarkNUIDSpeed(b *testing.B) {
 	n := New()
 	b.ReportAllocs()
