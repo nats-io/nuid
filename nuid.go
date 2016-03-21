@@ -6,6 +6,7 @@ package nuid
 import (
 	"crypto/rand"
 	"fmt"
+	"math"
 	"math/big"
 	"sync"
 	"time"
@@ -44,9 +45,15 @@ type lockedNUID struct {
 // Global NUID
 var globalNUID *lockedNUID
 
-// Seed sequential random with math/random and current time and generate crypto prefix.
+// Seed sequential random with crypto or math/random and current time
+// and generate crypto prefix.
 func init() {
-	prand.Seed(time.Now().UnixNano())
+	r, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
+	if err != nil {
+		prand.Seed(time.Now().UnixNano())
+	} else {
+		prand.Seed(r.Int64())
+	}
 	globalNUID = &lockedNUID{NUID: New()}
 	globalNUID.RandomizePrefix()
 }
