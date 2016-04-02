@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+func TestDigits(t *testing.T) {
+	if len(digits) != base {
+		t.Fatalf("digits length does not match base modulo")
+	}
+}
+
 func TestGlobalNUIDInit(t *testing.T) {
 	if globalNUID == nil {
 		t.Fatalf("Expected g to be non-nil\n")
