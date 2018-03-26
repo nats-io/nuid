@@ -105,7 +105,7 @@ func (n *NUID) Next() string {
 	bs := b[:preLen]
 	copy(bs, n.pre)
 
-	// copy in the seq in base36.
+	// copy in the seq in base62.
 	for i, l := len(b), seq; i > preLen; l /= base {
 		i -= 1
 		b[i] = digits[l%base]
