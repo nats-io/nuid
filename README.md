@@ -3,7 +3,7 @@
 [![License Apache 2](https://img.shields.io/badge/License-Apache2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![ReportCard](http://goreportcard.com/badge/nats-io/nuid)](http://goreportcard.com/report/nats-io/nuid)
 [![Build Status](https://travis-ci.org/nats-io/nuid.svg?branch=master)](http://travis-ci.org/nats-io/nuid)
-[![Release](https://img.shields.io/badge/release-v1.0.0-1eb0fc.svg)](https://github.com/nats-io/nuid/releases/tag/v1.0.0)
+[![Release](https://img.shields.io/badge/release-v1.0.1-1eb0fc.svg)](https://github.com/nats-io/nuid/releases/tag/v1.0.1)
 [![GoDoc](http://godoc.org/github.com/nats-io/nuid?status.png)](http://godoc.org/github.com/nats-io/nuid)
 [![Coverage Status](https://coveralls.io/repos/github/nats-io/nuid/badge.svg?branch=master)](https://coveralls.io/github/nats-io/nuid?branch=master)
 
