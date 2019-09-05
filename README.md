@@ -41,6 +41,8 @@ Total length of a NUID string is 22 bytes of base 62 ascii text, so 62^22 or
 NUID can generate identifiers as fast as 60ns, or ~16 million per second. There is an associated
 benchmark you can use to test performance on your own hardware.
 
+##Collision
+If you'd generate 16 million identifiers per second for a year, the chance of having a dublicate is approximately 0.00000000000112146.
 ## License
 
 Unless otherwise noted, the NATS source files are distributed
