@@ -68,7 +68,6 @@ func init() {
 		prand.Seed(r.Int64())
 	}
 	globalNUID = &lockedNUID{NUID: New()}
-	globalNUID.RandomizePrefix()
 }
 
 // New will generate a new NUID and properly initialize the prefix, sequential start, and sequential increment.
