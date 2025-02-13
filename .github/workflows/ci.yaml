@@ -1,0 +1,52 @@
+name: ci
+on: 
+  push:
+  pull_request:
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+      
+            - name: Setup Go
+              uses: actions/setup-go@v5
+              with:
+                go-version: 'stable'
+            
+            - name: Run linters
+              shell: bash --noprofile --norc -x -eo pipefail {0}
+              run: |
+                $(exit $(go fmt  ./... | wc -l))
+                go vet ./... 
+
+    test:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+              go: [ "1.16", "1.23" ]
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+      
+            - name: Setup Go
+              uses: actions/setup-go@v5
+              with:
+                go-version: ${{ matrix.go }}
+
+            - name: Test and coverage
+              shell: bash --noprofile --norc -x -eo pipefail {0}
+              run: |
+                if [ "${{ matrix.go }}" = "1.23" ]; then
+                  go test -v -covermode=count -coverprofile=coverage.out ./...
+                else
+                  go test -v -race
+                fi
+
+            - name: Coveralls
+              if: matrix.go == '1.23'
+              uses: coverallsapp/github-action@v2
+              with:
+               file: coverage.out
