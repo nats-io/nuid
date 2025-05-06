@@ -6,6 +6,7 @@
 [![Release](https://img.shields.io/badge/release-v1.0.1-1eb0fc.svg)](https://github.com/nats-io/nuid/releases/tag/v1.0.1)
 [![GoDoc](http://godoc.org/github.com/nats-io/nuid?status.png)](http://godoc.org/github.com/nats-io/nuid)
 [![Coverage Status](https://coveralls.io/repos/github/nats-io/nuid/badge.svg?branch=master)](https://coveralls.io/github/nats-io/nuid?branch=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnats-io%2Fnuid.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnats-io%2Fnuid?ref=badge_shield)
 
 A highly performant unique identifier generator.
 
@@ -45,3 +46,6 @@ benchmark you can use to test performance on your own hardware.
 
 Unless otherwise noted, the NATS source files are distributed
 under the Apache Version 2.0 license found in the LICENSE file.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnats-io%2Fnuid.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnats-io%2Fnuid?ref=badge_large)
