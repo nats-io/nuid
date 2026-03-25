@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"strings"
 	"sync"
 	"time"
 
@@ -48,6 +49,11 @@ type NUID struct {
 	pre []byte
 	seq int64
 	inc int64
+}
+
+type ParsedNUID struct {
+	Prefix   string
+	Sequence string
 }
 
 type lockedNUID struct {
@@ -116,6 +122,23 @@ func (n *NUID) Next() string {
 func (n *NUID) resetSequential() {
 	n.seq = prand.Int63n(maxSeq)
 	n.inc = minInc + prand.Int63n(maxInc-minInc)
+}
+
+// Parse validates and parses a NUID string into its prefix and sequence components.
+// Returns an error if the string is not a valid NUID.
+func Parse(nuid string) (ParsedNUID, error) {
+	if len(nuid) != totalLen {
+		return ParsedNUID{}, fmt.Errorf("nuid: invalid length %d, expected %d", len(nuid), totalLen)
+	}
+	for i := 0; i < len(nuid); i++ {
+		if strings.IndexByte(digits, nuid[i]) == -1 {
+			return ParsedNUID{}, fmt.Errorf("nuid: invalid character '%c' at position %d", nuid[i], i)
+		}
+	}
+	return ParsedNUID{
+		Prefix:   nuid[:preLen],
+		Sequence: nuid[preLen:],
+	}, nil
 }
 
 // Generate a new prefix from crypto/rand.

@@ -76,6 +76,38 @@ func TestProperPrefix(t *testing.T) {
 	}
 }
 
+func TestParseValid(t *testing.T) {
+	nuid := Next()
+	parsed, err := Parse(nuid)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+	if len(parsed.Prefix) != preLen {
+		t.Fatalf("Expected prefix len %d, got %d", preLen, len(parsed.Prefix))
+	}
+	if len(parsed.Sequence) != seqLen {
+		t.Fatalf("Expected sequence len %d, got %d", seqLen, len(parsed.Sequence))
+	}
+	if parsed.Prefix+parsed.Sequence != nuid {
+		t.Fatalf("Expected recombined NUID to match original")
+	}
+}
+
+func TestParseInvalidLength(t *testing.T) {
+	_, err := Parse("tooshort")
+	if err == nil {
+		t.Fatalf("Expected error for short string")
+	}
+}
+
+func TestParseInvalidCharacter(t *testing.T) {
+	// 22 chars but with an invalid character '!'
+	_, err := Parse("!234567890AB1234567890")
+	if err == nil {
+		t.Fatalf("Expected error for invalid character")
+	}
+}
+
 func BenchmarkNUIDSpeed(b *testing.B) {
 	n := New()
 	b.ReportAllocs()
