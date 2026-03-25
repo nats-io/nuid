@@ -90,3 +90,32 @@ func BenchmarkGlobalNUIDSpeed(b *testing.B) {
 		Next()
 	}
 }
+
+func TestIsValidWithGeneratedNUID(t *testing.T) {
+	for i := 0; i < 1000; i++ {
+		nuid := Next()
+		if !IsValid(nuid) {
+			t.Fatalf("Iter %d: expected generated NUID %q to be valid\n", i, nuid)
+		}
+	}
+}
+
+func TestIsValidInvalid(t *testing.T) {
+	tests := []struct {
+		nuid     string
+		testName string
+	}{
+		{nuid: "abc", testName: "TooShort"},
+		{nuid: "0123456789ABCDEFGHIJKLMx", testName: "TooLong"},
+		{nuid: "!0123456789ABCDEFGHIJK", testName: "InvalidChars"},
+		{nuid: "", testName: "Empty"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.testName, func(t *testing.T) {
+			if IsValid(tt.nuid) {
+				t.Fatalf("Expected %q to be invalid\n", tt.nuid)
+			}
+		})
+	}
+}
