@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"strings"
 	"sync"
 	"time"
 
@@ -140,7 +139,8 @@ func IsValid(s string) bool {
 		return false
 	}
 	for i := 0; i < totalLen; i++ {
-		if !strings.ContainsRune(digits, rune(s[i])) {
+		c := s[i]
+		if (c < '0' || c > '9') && (c < 'A' || c > 'Z') && (c < 'a' || c > 'z') {
 			return false
 		}
 	}
