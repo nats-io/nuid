@@ -31,7 +31,7 @@ import (
 // Total is 22 bytes of base 62 ascii text :)
 
 // Version of the library
-const Version = "1.0.1"
+const Version = "1.0.2"
 
 const (
 	digits   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -131,4 +131,18 @@ func (n *NUID) RandomizePrefix() {
 	for i := 0; i < preLen; i++ {
 		n.pre[i] = digits[int(cbs[i])%base]
 	}
+}
+
+// IsValid returns true if s is a valid NUID string (exactly 22 base-62 characters).
+func IsValid(s string) bool {
+	if len(s) != totalLen {
+		return false
+	}
+	for i := 0; i < totalLen; i++ {
+		c := s[i]
+		if (c < '0' || c > '9') && (c < 'A' || c > 'Z') && (c < 'a' || c > 'z') {
+			return false
+		}
+	}
+	return true
 }
