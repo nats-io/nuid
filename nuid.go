@@ -34,14 +34,18 @@ import (
 const Version = "1.0.2"
 
 const (
-	digits   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	base     = 62
-	preLen   = 12
-	seqLen   = 10
-	maxSeq   = int64(839299365868340224) // base^seqLen == 62^10
-	minInc   = int64(33)
-	maxInc   = int64(333)
-	totalLen = preLen + seqLen
+	digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	base   = 62
+	preLen = 12
+	// 256%62 is 8, so a raw byte modulo 62 hits digits 0-7 one extra time.
+	// Bytes at or above this limit are dropped. The remaining 248 values are
+	// four copies of each digit.
+	prefixUnbiased = 256 - (256 % base)
+	seqLen         = 10
+	maxSeq         = int64(839299365868340224) // base^seqLen == 62^10
+	minInc         = int64(33)
+	maxInc         = int64(333)
+	totalLen       = preLen + seqLen
 )
 
 type NUID struct {
@@ -124,13 +128,29 @@ func (n *NUID) resetSequential() {
 func (n *NUID) RandomizePrefix() {
 	var cb [preLen]byte
 	cbs := cb[:]
-	if nb, err := rand.Read(cbs); nb != preLen || err != nil {
-		panic(fmt.Sprintf("nuid: failed generating crypto random number: %v\n", err))
+	filled := 0
+	for filled < preLen {
+		if nb, err := rand.Read(cbs); nb != preLen || err != nil {
+			panic(fmt.Sprintf("nuid: failed generating crypto random number: %v\n", err))
+		}
+		for i := 0; i < preLen && filled < preLen; i++ {
+			d, ok := prefixDigit(cbs[i])
+			if !ok {
+				continue
+			}
+			n.pre[filled] = d
+			filled++
+		}
 	}
+}
 
-	for i := 0; i < preLen; i++ {
-		n.pre[i] = digits[int(cbs[i])%base]
+// prefixDigit maps one random byte onto the base-62 alphabet.
+// Bytes that would make digits 0-7 more likely than the rest are rejected.
+func prefixDigit(b byte) (byte, bool) {
+	if int(b) >= prefixUnbiased {
+		return 0, false
 	}
+	return digits[int(b)%base], true
 }
 
 // IsValid returns true if s is a valid NUID string (exactly 22 base-62 characters).
