@@ -24,6 +24,32 @@ func TestDigits(t *testing.T) {
 	}
 }
 
+func TestPrefixDigitUnbiased(t *testing.T) {
+	counts := make([]int, base)
+	for b := 0; b < 256; b++ {
+		d, ok := prefixDigit(byte(b))
+		if b >= prefixUnbiased {
+			if ok {
+				t.Fatalf("byte %d should be rejected", b)
+			}
+			continue
+		}
+		if !ok {
+			t.Fatalf("byte %d should map to a digit", b)
+		}
+		idx := bytes.IndexByte([]byte(digits), d)
+		if idx != b%base {
+			t.Fatalf("byte %d mapped to %q, want index %d", b, d, b%base)
+		}
+		counts[idx]++
+	}
+	for i, c := range counts {
+		if c != 4 {
+			t.Fatalf("digit %d appears %d times in the unbiased range, want 4", i, c)
+		}
+	}
+}
+
 func TestGlobalNUIDInit(t *testing.T) {
 	if globalNUID == nil {
 		t.Fatalf("Expected g to be non-nil\n")
